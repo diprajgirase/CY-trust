@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import LottieView from "lottie-react-native";  // Import Lottie
 
 const { width } = Dimensions.get("window");
 
@@ -29,26 +30,23 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Circular Score Indicator */}
-      <View
-        style={{
-          alignSelf: "center",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 150,
-          height: 150,
-          borderRadius: 75,
-          backgroundColor: "#2d0d04",
-          shadowColor: "#ff8800",
-          shadowOpacity: 0.8,
-          shadowRadius: 15,
-          shadowOffset: { width: 0, height: 10 },
-          elevation: 10,
-          marginVertical: 20,
-        }}
-      >
-        <Text style={{ color: "#ff8800", fontSize: 28, fontWeight: "bold" }}>2.0</Text>
-        <Text style={{ color: "#fff", fontSize: 14 }}>out of 5</Text>
+      {/* Lottie Animation (Local + URL Fallback) */}
+      <View style={{ alignItems: "center", marginVertical: 20 }}>
+        {/* <LottieView
+          source={require("../../assets/Animation.json")} // Local file
+          autoPlay
+          loop
+          style={{ width: 200, height: 200 }}
+        /> */}
+        
+        {/* URL-based Lottie (If the local file doesn't work) */}
+        <LottieView
+          source={{ uri: "https://assets2.lottiefiles.com/packages/lf20_j1adxtyb.json" }}
+          autoPlay
+          loop
+          style={{ width: 200, height: 200 }}
+        />
+       
       </View>
 
       {/* Report Spam Button */}
@@ -83,8 +81,8 @@ const HomeScreen = () => {
           <View
             key={index}
             style={{
-              width: width * 0.42, // Responsive width
-              aspectRatio: 1, // Square shape
+              width: width * 0.42,
+              aspectRatio: 1,
               backgroundColor: "#1d0f17",
               borderRadius: 15,
               padding: 15,
@@ -94,19 +92,16 @@ const HomeScreen = () => {
               shadowRadius: 10,
               shadowOffset: { width: 0, height: 5 },
               elevation: 5,
-              marginVertical: 10, // Proper spacing
+              marginVertical: 10,
             }}
           >
-            {/* Icon & Title */}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Ionicons name={item.icon} size={18} color="#ffffff" style={{ marginRight: 5 }} />
               <Text style={{ color: "#ffffff", fontSize: 14, fontWeight: "bold" }}>{item.title}</Text>
             </View>
 
-            {/* "What's this?" Text */}
             <Text style={{ color: "#a020f0", fontSize: 12, marginTop: 5 }}>What's this?</Text>
 
-            {/* Enable Button */}
             <TouchableOpacity
               style={{
                 backgroundColor: "#800080",
