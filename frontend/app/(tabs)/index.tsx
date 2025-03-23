@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+
+const { width } = Dimensions.get("window");
 
 const HomeScreen = () => {
   const data = [
@@ -9,23 +11,19 @@ const HomeScreen = () => {
     { title: "Companies", icon: "briefcase-outline" },
     { title: "Others", icon: "layers-outline" },
   ];
-  
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#100a0c" }}>
+    <View style={{ flex: 1, backgroundColor: "#100a0c", padding: 20 }}>
       {/* Header Section */}
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: 20,
         }}
       >
-        {/* Hi Dip (Left Side) */}
         <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>Hi Dip!</Text>
 
-        {/* Notification Button (Right Side) */}
         <TouchableOpacity>
           <Ionicons name="notifications-outline" size={26} color="#fff" />
         </TouchableOpacity>
@@ -46,7 +44,7 @@ const HomeScreen = () => {
           shadowRadius: 15,
           shadowOffset: { width: 0, height: 10 },
           elevation: 10,
-          marginVertical: 30,
+          marginVertical: 20,
         }}
       >
         <Text style={{ color: "#ff8800", fontSize: 28, fontWeight: "bold" }}>2.0</Text>
@@ -65,6 +63,7 @@ const HomeScreen = () => {
           shadowOpacity: 0.6,
           shadowRadius: 10,
           elevation: 5,
+          marginBottom: 20,
         }}
       >
         <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>Report Spam</Text>
@@ -73,18 +72,18 @@ const HomeScreen = () => {
       {/* Inspected Items Grid (2x2) */}
       <View
         style={{
+          flex: 1,
           flexDirection: "row",
           flexWrap: "wrap",
           justifyContent: "space-between",
-          padding: 20,
-          marginTop: 30,
+          alignItems: "center",
         }}
       >
         {data.map((item, index) => (
           <View
             key={index}
             style={{
-              width: "48%", // Two in a row
+              width: width * 0.42, // Responsive width
               aspectRatio: 1, // Square shape
               backgroundColor: "#1d0f17",
               borderRadius: 15,
@@ -95,7 +94,7 @@ const HomeScreen = () => {
               shadowRadius: 10,
               shadowOffset: { width: 0, height: 5 },
               elevation: 5,
-              marginVertical: 10, // Proper spacing from top and bottom
+              marginVertical: 10, // Proper spacing
             }}
           >
             {/* Icon & Title */}
@@ -116,12 +115,12 @@ const HomeScreen = () => {
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 14 }}>Enable</Text>
+              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 14 }}>Chat</Text>
             </TouchableOpacity>
           </View>
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
