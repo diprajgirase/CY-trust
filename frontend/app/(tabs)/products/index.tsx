@@ -1,27 +1,82 @@
-import { View, Text, FlatList, StyleSheet, StatusBar, Dimensions, SafeAreaView } from 'react-native';
-import React from 'react';
+import { View, Text, FlatList, StyleSheet, StatusBar, Dimensions, SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
 
 const { width } = Dimensions.get('window');
 
-const products = [
-  { id: '1', name: 'Penetration Testing', description: 'Simulated cyber attacks to find vulnerabilities.' },
-  { id: '2', name: 'Firewall Setup', description: 'Advanced firewall solutions for secure networks.' },
-  { id: '3', name: 'Phishing Simulation', description: 'Employee security awareness training via mock attacks.' },
-  { id: '4', name: 'Cybersecurity Consultation', description: 'Expert advice to strengthen security strategies.' },
-  { id: '5', name: 'Malware Protection Ads', description: 'Targeted ads promoting malware defense services.' },
-  { id: '6', name: 'DDoS Protection', description: 'Mitigation strategies against distributed denial-of-service attacks.' },
-  { id: '7', name: 'Data Encryption Services', description: 'End-to-end encryption for sensitive data protection.' },
-  { id: '8', name: 'Cyber Threat Intelligence', description: 'Real-time monitoring and reporting of potential threats.' }
-];
+const tools = {
+  free: [
+    { id: '1', name: 'Penetration Testing', description: 'Simulated cyber attacks to find vulnerabilities.' },
+    { id: '2', name: 'Firewall Setup', description: 'Advanced firewall solutions for secure networks.' },
+  ],
+  paid: [
+    { id: '3', name: 'Phishing Simulation', description: 'Employee security awareness training via mock attacks.' },
+    { id: '4', name: 'Cybersecurity Consultation', description: 'Expert advice to strengthen security strategies.' },
+  ],
+  topRated: [
+    { id: '9', name: 'Advanced Threat Protection', description: 'AI-powered security monitoring system.' }
+  ]
+};
+
+const education = {
+  free: [
+    { id: '5', name: 'Malware Protection Ads', description: 'Targeted ads promoting malware defense services.' },
+    { id: '6', name: 'DDoS Protection', description: 'Mitigation strategies against distributed denial-of-service attacks.' },
+  ],
+  paid: [
+    { id: '7', name: 'Data Encryption Services', description: 'End-to-end encryption for sensitive data protection.' },
+    { id: '8', name: 'Cyber Threat Intelligence', description: 'Real-time monitoring and reporting of potential threats.' },
+  ],
+  topRated: [
+    { id: '10', name: 'Cybersecurity Bootcamp', description: 'Comprehensive training for security professionals.' }
+  ]
+};
 
 const Products = () => {
+  const [selectedCategory, setSelectedCategory] = useState('tools');
+  const [selectedType, setSelectedType] = useState('free');
+
   return (
     <SafeAreaView style={styles.safeContainer}>
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
         <Text style={styles.heading}>Products</Text>
+        
+        {/* Category Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={[styles.smallButton, selectedCategory === 'tools' && styles.activeButton]} 
+            onPress={() => setSelectedCategory('tools')}>
+            <Text style={styles.buttonText}>Tools</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.smallButton, selectedCategory === 'education' && styles.activeButton]} 
+            onPress={() => setSelectedCategory('education')}>
+            <Text style={styles.buttonText}>Education</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Type Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={[styles.smallButton, selectedType === 'free' && styles.activeButton]} 
+            onPress={() => setSelectedType('free')}>
+            <Text style={styles.buttonText}>Free</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.smallButton, selectedType === 'paid' && styles.activeButton]} 
+            onPress={() => setSelectedType('paid')}>
+            <Text style={styles.buttonText}>Paid</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.smallButton, selectedType === 'topRated' && styles.activeButton]} 
+            onPress={() => setSelectedType('topRated')}>
+            <Text style={styles.buttonText}>Top Rated</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Display Selected Category and Type */}
         <FlatList
-          data={products}
+          data={selectedCategory === 'tools' ? tools[selectedType] : education[selectedType]}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.productItem}>
@@ -50,7 +105,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 10,
-    marginTop: 15, // Added marginTop to balance spacing
+    marginTop: 15,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  smallButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#333',
+    marginHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeButton: {
+    backgroundColor: '#e94560',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   listContent: {
     paddingBottom: 20,
