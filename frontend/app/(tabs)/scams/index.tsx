@@ -16,7 +16,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Or any other icon library
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const initialScamsData = [
     {
@@ -135,7 +135,7 @@ const Scams = () => {
     const onShare = async (item) => {
         try {
             const shareOptions = {
-                message: `<span class="math-inline">\{item\.title\}\\n\\n</span>{item.description}\n\nView the image for more details.`,
+                message: `${item.title}\n\n${item.description}\n\nView the image for more details.`,
             };
 
             if (item.thumbnailImage) {
@@ -160,7 +160,7 @@ const Scams = () => {
             <View style={styles.header}>
                 <Text style={styles.heading}>Scams</Text>
                 <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
-                    <Icon name="filter" size={24} color="#fff" />
+                    <Icon name="sliders" size={24} color="#fff" />
                 </TouchableOpacity>
             </View>
             <FlatList
@@ -243,6 +243,12 @@ const Scams = () => {
                     </View>
                 </View>
             </Modal>
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => console.log('Add button pressed')} // Replace with your desired action
+            >
+                <Icon name="plus" size={30} color="#fff" />
+            </TouchableOpacity>
         </SafeAreaView>
     );
 };
@@ -404,6 +410,27 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 16,
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#38bdf8', // Or any color you like
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 5, // Add shadow for better visibility
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+    },
+    addButtonIcon: {
+        width: 10, // Adjust size as needed
+        height: 10,
+        resizeMode: 'contain',
     },
 });
 
