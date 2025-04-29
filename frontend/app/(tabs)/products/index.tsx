@@ -1,9 +1,73 @@
-import { View, Text, FlatList, StyleSheet, StatusBar, Dimensions, SafeAreaView, TouchableOpacity, Image, Linking } from 'react-native';
 import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, StatusBar, Dimensions, SafeAreaView, TouchableOpacity, Image, Linking } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
-const tools = {
+const CategoryTabs = ({ onTabChange }) => {
+  const [activeTab, setActiveTab] = useState('Tools');
+
+  const handleTabPress = (tabName) => {
+    setActiveTab(tabName);
+    onTabChange(tabName);
+  };
+
+  return (
+    <View style={tabStyles.tabContainer}>
+      <TouchableOpacity
+        style={[tabStyles.tabItem, activeTab === 'Tools' && tabStyles.activeTabItem]}
+        onPress={() => handleTabPress('Tools')}
+      >
+        <Text style={[tabStyles.tabText, activeTab === 'Tools' && tabStyles.activeTabText]}>Tools</Text>
+        {activeTab === 'Tools' && <View style={tabStyles.activeIndicator} />}
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[tabStyles.tabItem, activeTab === 'Education' && tabStyles.activeTabItem]}
+        onPress={() => handleTabPress('Education')}
+      >
+        <Text style={[tabStyles.tabText, activeTab === 'Education' && tabStyles.activeTabText]}>Education</Text>
+        {activeTab === 'Education' && <View style={tabStyles.activeIndicator} />}
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const tabStyles = StyleSheet.create({
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#0d0d0d',
+    borderBottomWidth: 1,
+    borderBottomColor: '#222',
+    marginBottom: 15,
+    marginTop: 10, // Added top padding
+  },
+  tabItem: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTabItem: {
+    // No specific styling needed here as the indicator handles the visual cue
+  },
+  tabText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#888',
+  },
+  activeTabText: {
+    color: '#fff',
+  },
+  activeIndicator: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: '#38bdf8',
+  },
+});
+
+const toolsData = {
   free: [
     { id: '1', name: 'Truecaller', description: 'Phone number identification and spam blocking tool.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5LbK0ydAxB9LxjVRB-G4Id_5ZsttZGNagkA&s', link: 'https://www.truecaller.com/' },
     { id: '2', name: 'Norton Genie', description: 'Comprehensive cybersecurity solution for devices.', image: 'https://play-lh.googleusercontent.com/F_1_9msUmgfyszGN6m9-a-D361-ViD8GOe37gUVnJwHmJWXlEIinVv_6vDhkAisNsQ=w240-h480-rw', link: 'https://www.norton.com/' },
@@ -17,7 +81,7 @@ const tools = {
   ]
 };
 
-const education = {
+const educationData = {
   free: [
     { id: '5', name: 'Cybersecurity Expert Tells Teens How to Avoid Scams', description: 'A practical guide for young audiences on identifying and avoiding common online scams.', image: 'https://t3.ftcdn.net/jpg/04/74/05/94/360_F_474059464_qldYuzxaUWEwNTtYBJ44VN89ARuFktHW.jpg', link: 'https://www.cybersecurityteens.com/' },
     { id: '6', name: 'Protect Yourself from Scams and Fraud Webinar', description: 'This webinar discusses trending scams and fraud targeting individuals and communities.', image: 'https://t3.ftcdn.net/jpg/04/74/05/94/360_F_474059464_qldYuzxaUWEwNTtYBJ44VN89ARuFktHW.jpg', link: 'https://www.fraudprotectionwebinar.com/' },
@@ -34,53 +98,59 @@ const education = {
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('tools');
   const [selectedType, setSelectedType] = useState('free');
+  const [activeFeed, setActiveFeed] = useState('Tools');
+  const [currentData, setCurrentData] = useState(toolsData['free']); // Initialize with Tools - Free data
 
   const handlePress = (url) => {
     Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveFeed(tab);
+    if (tab === 'Tools') {
+      setCurrentData(toolsData[selectedType] || []);
+    } else if (tab === 'Education') {
+      setCurrentData(educationData[selectedType] || []);
+    }
+  };
+
+  const handleTypeChange = (type) => {
+    setSelectedType(type);
+    if (activeFeed === 'Tools') {
+      setCurrentData(toolsData[type] || []);
+    } else if (activeFeed === 'Education') {
+      setCurrentData(educationData[type] || []);
+    }
   };
 
   return (
     <SafeAreaView style={styles.safeContainer}>
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
-        <Text style={styles.heading}>Products</Text>
-        
-        {/* Category Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={[styles.smallButton, selectedCategory === 'tools' && styles.activeButton]} 
-            onPress={() => setSelectedCategory('tools')}>
-            <Text style={styles.buttonText}>Tools</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.smallButton, selectedCategory === 'education' && styles.activeButton]} 
-            onPress={() => setSelectedCategory('education')}>
-            <Text style={styles.buttonText}>Education</Text>
-          </TouchableOpacity>
-        </View>
-        
+        <CategoryTabs onTabChange={handleTabChange} />
+
         {/* Type Buttons */}
-        <View style={styles.categoryButtonContainer}>
-          <TouchableOpacity 
-            style={[styles.smallCategoryButton, selectedType === 'free' && styles.activeCategoryButton]} 
-            onPress={() => setSelectedType('free')}>
-            <Text style={styles.categoryButtonText}>Free</Text>
+        <View style={styles.typeButtonContainer}>
+          <TouchableOpacity
+            style={[styles.typeButton, selectedType === 'free' && styles.activeTypeButton]}
+            onPress={() => handleTypeChange('free')}>
+            <Text style={styles.typeButtonText}>Free</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.smallCategoryButton, selectedType === 'paid' && styles.activeCategoryButton]} 
-            onPress={() => setSelectedType('paid')}>
-            <Text style={styles.categoryButtonText}>Paid</Text>
+          <TouchableOpacity
+            style={[styles.typeButton, selectedType === 'paid' && styles.activeTypeButton]}
+            onPress={() => handleTypeChange('paid')}>
+            <Text style={styles.typeButtonText}>Paid</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.smallCategoryButton, selectedType === 'topRated' && styles.activeCategoryButton]} 
-            onPress={() => setSelectedType('topRated')}>
-            <Text style={styles.categoryButtonText}>Top Rated</Text>
+          <TouchableOpacity
+            style={[styles.typeButton, selectedType === 'topRated' && styles.activeTypeButton]}
+            onPress={() => handleTypeChange('topRated')}>
+            <Text style={styles.typeButtonText}>Top Rated</Text>
           </TouchableOpacity>
         </View>
 
         {/* Display Selected Category and Type */}
         <FlatList
-          data={selectedCategory === 'tools' ? tools[selectedType] : education[selectedType]}
+          data={currentData}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handlePress(item.link)} style={styles.productItem}>
@@ -109,7 +179,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   heading: {
-    fontSize: 24, 
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 10,
@@ -120,21 +190,43 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 15,
   },
-  smallButton: {
+  categoryButton: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 10,
     backgroundColor: '#333',
     marginHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  activeButton: {
+  activeCategoryButton: {
     backgroundColor: '#38bdf8',
+    borderBottomWidth: 2,
+    borderBottomColor: '#38bdf8',
   },
-  buttonText: {
+  categoryButtonText: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  typeButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  typeButton: {
+    flex: 1,
+    paddingVertical: 8,
+    backgroundColor: '#555',
+    marginHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTypeButton: {
+    backgroundColor: '#38bdf8',
+  },
+  typeButtonText: {
+    color: '#fff',
+    fontSize: 14,
     fontWeight: 'bold',
   },
   listContent: {
@@ -174,28 +266,6 @@ const styles = StyleSheet.create({
     color: '#bbb',
     marginTop: 6,
     lineHeight: 20,
-  },
-  smallCategoryButton: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 6,
-    backgroundColor: '#555',
-    marginHorizontal: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activeCategoryButton: {
-    backgroundColor: '#38bdf8',
-  },
-  categoryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  categoryButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
   },
 });
 
