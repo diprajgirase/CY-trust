@@ -8,8 +8,9 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather'; // Ensure you have this installed
 
-const Messages = () => {
+const Messages = ({ navigation }) => {
   const [chatList] = useState([
     {
       id: 'govt',
@@ -50,43 +51,79 @@ const Messages = () => {
 
   const [chatMessages, setChatMessages] = useState({
     axis: [{ id: '1', text: 'Welcome to Axis Bank!', sender: 'bot' }],
-    govt: [{ id: '2', text: 'This is the Government Bot.', sender: 'bot' }],
+    govt: [
+      { id: '3', text: 'how may I assist you', sender: 'bot' },
+      { id: '4', text: 'I have received an message from one person who is proving himself as an government official asking for otp for document verification', sender: 'user' },
+      { id: '5', text: 'ok ,can you please share more details like message screenshot', sender: 'bot' },
+      { id: '6', type: 'attachment' }, // Attachment item
+    ],
     bank: [{ id: '3', text: 'Hello from Bank Bot.', sender: 'bot' }],
     company: [{ id: '4', text: 'Welcome to our company!', sender: 'bot' }],
     reliance: [{ id: '5', text: 'Hello from Reliance!', sender: 'bot' }],
   });
 
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState('govt');
   const [inputText, setInputText] = useState('');
 
-  const sendMessage = () => {
+  const handleSend = () => {
     if (!selectedChat || !inputText.trim()) return;
 
-    const newMessage = {
+    const newMessages = [...(chatMessages[selectedChat] || [])];
+    newMessages.push({
       id: Date.now().toString(),
       text: inputText,
       sender: 'user',
-    };
-    const botReply = {
+    });
+    newMessages.push({
       id: Date.now().toString() + 'bot',
-      text: 'I will look into that.',
+      text: 'Thank you for the information.',
       sender: 'bot',
-    };
-
-    const updatedMessages = [
-      ...(chatMessages[selectedChat] || []),
-      newMessage,
-      botReply,
-    ];
-
-    setChatMessages({ ...chatMessages, [selectedChat]: updatedMessages });
+    });
     setInputText('');
+
+    setChatMessages((prevMessages) => ({
+      ...prevMessages,
+      [selectedChat]: newMessages,
+    }));
+  };
+
+  const renderItem = ({ item }) => {
+    if (item.type === 'attachment') {
+      return (
+        <View style={[styles.messageContainer, styles.botMessage, styles.attachmentMessageContainer]}>
+          <Text style={styles.attachmentOptionText}>Attach:</Text>
+          <View style={styles.attachmentOptions}>
+            <TouchableOpacity style={styles.attachmentOption}>
+              <Icon name="image" size={20} color="#bbb" style={styles.attachmentIcon} />
+              <Text style={styles.attachmentOptionLabel}>Screenshot</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.attachmentOption}>
+              <Icon name="file-text" size={20} color="#bbb" style={styles.attachmentIcon} />
+              <Text style={styles.attachmentOptionLabel}>PDF</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.attachmentOption}>
+              <Icon name="mic" size={20} color="#bbb" style={styles.attachmentIcon} />
+              <Text style={styles.attachmentOptionLabel}>Recording</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <View
+        style={[
+          styles.messageContainer,
+          item.sender === 'user' ? styles.userMessage : styles.botMessage,
+        ]}
+      >
+        <Text style={styles.messageText}>{item.text}</Text>
+      </View>
+    );
   };
 
   return (
     <View style={styles.container}>
-      {!selectedChat && <Text style={styles.title}>Messages</Text>}
-
       {!selectedChat ? (
         <FlatList
           data={chatList}
@@ -99,6 +136,7 @@ const Messages = () => {
                   setChatMessages((prev) => ({ ...prev, [item.id]: [] }));
                 }
                 setSelectedChat(item.id);
+                navigation?.setOptions({ tabBarVisible: false });
               }}
             >
               <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
@@ -108,27 +146,23 @@ const Messages = () => {
         />
       ) : (
         <>
-          <TouchableOpacity onPress={() => setSelectedChat(null)} style={styles.backButton}>
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.chatName}>
-            Chat with {chatList.find((c) => c.id === selectedChat)?.name}
-          </Text>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedChat(null);
+                navigation?.setOptions({ tabBarVisible: true });
+              }}
+              style={styles.backButton}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+            <Text style={styles.chatName}>{chatList.find((c) => c.id === selectedChat)?.name}</Text>
+          </View>
 
           <FlatList
             data={chatMessages[selectedChat] || []}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View
-                style={[
-                  styles.messageContainer,
-                  item.sender === 'user' ? styles.userMessage : styles.botMessage,
-                ]}
-              >
-                <Text style={styles.messageText}>{item.text}</Text>
-              </View>
-            )}
+            renderItem={renderItem}
           />
 
           <View style={styles.inputContainer}>
@@ -139,7 +173,7 @@ const Messages = () => {
               placeholder="Type a message..."
               placeholderTextColor="#aaa"
             />
-            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+            <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
               <Text style={styles.sendButtonText}>Send</Text>
             </TouchableOpacity>
           </View>
@@ -179,23 +213,27 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
-  backButton: {
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    alignSelf: 'flex-start',
-    backgroundColor: '#333',
-    borderRadius: 5,
+  },
+  backButton: {
+    marginRight: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderRadius: 15,
   },
   backButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#bbb',
+    fontSize: 30,
+    fontWeight: 'bold',
+    lineHeight: 30,
   },
   chatName: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#bbb',
-    marginBottom: 10,
   },
   messageContainer: {
     padding: 10,
@@ -205,7 +243,7 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#38bdf8',
   },
   botMessage: {
     alignSelf: 'flex-start',
@@ -229,7 +267,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#38bdf8',
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderRadius: 5,
@@ -237,6 +275,35 @@ const styles = StyleSheet.create({
   sendButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  attachmentMessageContainer: {
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+  },
+  attachmentOptionText: {
+    color: '#bbb',
+    marginBottom: 10,
+  },
+  attachmentOptions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  attachmentOption: {
+    backgroundColor: '#2c2c2e',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    marginRight: 10,
+    marginBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  attachmentIcon: {
+    marginRight: 5,
+  },
+  attachmentOptionLabel: {
+    color: '#fff',
   },
 });
 
