@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   chatItem: {
     padding: 15,

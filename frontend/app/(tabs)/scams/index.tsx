@@ -11,6 +11,7 @@ import {
     Modal,
     Pressable,
     Image, // Import the Image component
+    Share, // Import the Share component
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Or any other icon library
@@ -19,114 +20,64 @@ const { width } = Dimensions.get('window');
 
 const initialScamsData = [
     {
-        id: '1',
-        title: 'Online Banking Fraud',
-        date: 'March 20, 2025',
-        description: 'Scammers trick victims into sharing banking details via fake websites or calls. They often use phishing techniques and fake banking apps to steal money.',
-        thumbnailColor: '#a855f7',
-        type: 'Phishing Scams',
-        year: 2025,
-        thumbnailImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Phishing_Example.png/800px-Phishing_Example.png', // Example
-    },
-    {
-        id: '2',
-        title: 'Fake Job Offer Scam',
-        date: 'March 18, 2025',
-        description: 'Fraudulent companies ask for upfront payments for fake job offers, promising high salaries but disappearing after collecting fees from job seekers.',
-        thumbnailColor: '#f97316',
-        type: 'Job Offer Scams',
-        year: 2025,
-        thumbnailImage: 'https://www.consumer.ftc.gov/sites/default/files/images/articles/shutterstock_372980397-job-scam-inline.jpg', // Example
-    },
-    {
-        id: '3',
-        title: 'Lottery Scam',
-        date: 'March 15, 2025',
-        description: 'Victims are told they won a lottery but need to pay fees to claim it. Scammers send fake certificates and demand bank details.',
-        thumbnailColor: '#22c55e',
-        type: null, // Example of a scam without a specific type
-        year: 2025,
-        thumbnailImage: 'https://www.ic3.gov/Content/Images/lotteryfraud.jpg', // Example
-    },
-    {
-        id: '4',
-        title: 'Investment Scam Alert!',
-        date: 'March 10, 2025',
+        id: '6',
+        title: 'Offshore Investment Scams',
+        date: 'March, 2025',
         description: 'Scammers promise unrealistic returns on investments in fake companies or crypto schemes, luring victims into Ponzi schemes.',
         thumbnailColor: '#eab308',
         type: 'Investment Scams',
         year: 2025,
-        thumbnailImage: 'https://www.finra.org/sites/default/files/2021-04/investment-scam-inline.jpg', // Example
-    },
-    {
-        id: '5',
-        title: 'Online Shopping Scam Warning',
-        date: 'March 5, 2025',
-        description: 'Fake e-commerce websites trick users into buying products that never get delivered. Payment is taken, but no item is shipped.',
-        thumbnailColor: '#3b82f6',
-        type: 'Online Shopping Scams',
-        year: 2025,
-        thumbnailImage: 'https://www.experian.com/blogs/ask-experian/wp-content/uploads/online-shopping-scam.jpg', // Example
-    },
-    {
-        id: '6',
-        title: 'Another Phishing Incident',
-        date: 'December 1, 2024',
-        description: 'More phishing attempts...',
-        thumbnailColor: '#a855f7',
-        type: 'Phishing Scams',
-        year: 2024,
-        thumbnailImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Phishing_Example.png/800px-Phishing_Example.png', // Example
+        thumbnailImage: 'https://it.uic.edu/wp-content/uploads/sites/360/2021/01/phishing-news.jpg', // Example
     },
     {
         id: '7',
-        title: 'Old Investment Opportunity',
-        date: 'July 15, 2024',
+        title: 'Fake ICOs/Cryptocurrency Scams',
+        date: 'July, 2025',
         description: 'An older investment scam...',
         thumbnailColor: '#eab308',
         type: 'Investment Scams',
         year: 2024,
-        thumbnailImage: 'https://www.lfcu.org/files/cryptocurrency-scam-1600x675-1-e1674643309155.jpg', // Example
+        thumbnailImage: 'https://inc42.com/cdn-cgi/image/quality=75/https://asset.inc42.com/2020/12/crypto.jpg', // Example
     },
     {
         id: '8',
-        title: 'Old Investment Opportunity',
-        date: 'July 15, 2024',
+        title: 'Pyramid Schemes',
+        date: 'July, 2025',
         description: 'An older investment scam...',
         thumbnailColor: '#eab308',
         type: 'Investment Scams',
         year: 2024,
-        thumbnailImage: 'https://www.finra.org/sites/default/files/2021-04/investment-scam-inline.jpg', // Example
+        thumbnailImage: 'https://www.acamstoday.org/wp-content/uploads/2022/08/Ponzi-and-Pyramid-Schemes-Spread-Across-the-Caribbean.jpg', // Example
     },
     {
         id: '9',
-        title: 'Old Investment Opportunity',
-        date: 'July 15, 2024',
+        title: 'Ponzi Schemes',
+        date: 'July, 2024',
         description: 'An older investment scam...',
         thumbnailColor: '#eab308',
         type: 'Investment Scams',
         year: 2024,
-        thumbnailImage: 'https://www.finra.org/sites/default/files/2021-04/investment-scam-inline.jpg', // Example
+        thumbnailImage: 'https://cdn-trustworthyshopping.aboutamazon.com/dims4/default/bfc3956/2147483647/strip/true/crop/1998x1125+1+0/resize/1000x563!/quality/90/?url=https%3A%2F%2Famazon-k1-prod-cter.s3.us-west-2.amazonaws.com%2Fbrightspot%2F9b%2Fa4%2F7e9676a14a3e990a47d866275031%2Fscam-trends-hero.jpg', // Example
     },
     {
         id: '10',
-        title: 'Old Investment Opportunity',
-        date: 'July 15, 2024',
+        title: 'Forex Scams',
+        date: 'July, 2024',
         description: 'An older investment scam...',
         thumbnailColor: '#eab308',
         type: 'Investment Scams',
         year: 2024,
-        thumbnailImage: 'https://www.finra.org/sites/default/files/2021-04/investment-scam-inline.jpg', // Example
+        thumbnailImage: 'https://cdn.i-scmp.com/sites/default/files/styles/1020x680/public/d8/images/canvas/2024/05/21/9efc20d5-e5bb-4cdb-9fa9-dab027e27fc6_7a904230.jpg?itok=5DuDut94&v=1716290749', // Example
     },
     {
         id: '11',
         title: 'Old Investment Opportunity',
-        date: 'July 15, 2024',
+        date: 'July, 2024',
         description: 'An older investment scam...',
         thumbnailColor: '#eab308',
         type: 'Investment Scams',
         year: 2024,
-        thumbnailImage: 'https://www.finra.org/sites/default/files/2021-04/investment-scam-inline.jpg', // Example
+        thumbnailImage: 'https://www.investright.org/wp-content/uploads/2022/03/blog-nasaa-top-investor-threats.jpg', // Example
     },
 ];
 
@@ -181,6 +132,28 @@ const Scams = () => {
         }));
     };
 
+    const onShare = async (item) => {
+        try {
+            const shareOptions = {
+                message: `<span class="math-inline">\{item\.title\}\\n\\n</span>{item.description}\n\nView the image for more details.`,
+            };
+
+            if (item.thumbnailImage) {
+                shareOptions.url = item.thumbnailImage;
+            }
+
+            const result = await Share.share(shareOptions);
+
+            if (result.action === Share.sharedAction) {
+                console.log('Shared successfully');
+            } else if (result.action === Share.dismissedAction) {
+                console.log('Dismissed');
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
     return (
         <SafeAreaView style={styles.safeContainer}>
             <StatusBar barStyle="light-content" />
@@ -194,23 +167,28 @@ const Scams = () => {
                 data={filteredScams}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleScamPress(item)} style={styles.scamItem}>
-                        {item.thumbnailImage ? (
-                            <Image
-                                source={{ uri: item.thumbnailImage }}
-                                style={styles.thumbnailImage}
-                            />
-                        ) : (
-                            <View style={[styles.thumbnail, { backgroundColor: item.thumbnailColor }]} />
-                        )}
-                        <View style={styles.textContent}>
-                            <Text style={styles.scamTitle}>{item.title}</Text>
-                            <Text style={styles.scamDate}>{item.date}</Text>
-                            <Text style={styles.scamDescription} numberOfLines={2}>
-                                {item.description}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <View style={styles.scamItem}>
+                        <TouchableOpacity onPress={() => handleScamPress(item)} style={styles.itemContent}>
+                            {item.thumbnailImage ? (
+                                <Image
+                                    source={{ uri: item.thumbnailImage }}
+                                    style={styles.thumbnailImage}
+                                />
+                            ) : (
+                                <View style={[styles.thumbnail, { backgroundColor: item.thumbnailColor }]} />
+                            )}
+                            <View style={styles.textContent}>
+                                <Text style={styles.scamTitle}>{item.title}</Text>
+                                <Text style={styles.scamDate}>{item.date}</Text>
+                                <Text style={styles.scamDescription} numberOfLines={2}>
+                                    {item.description}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.shareButton} onPress={() => onShare(item)}>
+                            <Icon name="share-alt" size={20} color="#fff" />
+                        </TouchableOpacity>
+                    </View>
                 )}
                 contentContainerStyle={styles.listContent}
             />
@@ -309,6 +287,12 @@ const styles = StyleSheet.create({
         width: width * 0.9,
         alignSelf: 'center',
         alignItems: 'center',
+        justifyContent: 'space-between', // Added to space out content and share button
+    },
+    itemContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexShrink: 1, // Allows text content to shrink if needed
     },
     thumbnail: {
         width: 80,
@@ -317,7 +301,7 @@ const styles = StyleSheet.create({
         marginRight: 16,
     },
     thumbnailImage: {
-        width: 80,
+        width: 120,
         height: 80,
         borderRadius: 10,
         marginRight: 16,
@@ -340,6 +324,10 @@ const styles = StyleSheet.create({
         color: '#bbb',
         marginTop: 4,
         lineHeight: 18,
+    },
+    shareButton: {
+        padding: 10,
+        borderRadius: 8,
     },
     modalOverlay: {
         flex: 1,
