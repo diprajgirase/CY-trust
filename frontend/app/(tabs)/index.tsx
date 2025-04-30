@@ -2,16 +2,22 @@ import React from "react";
 import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LottieView from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const data = [
     { title: "Governments", icon: "business-outline" },
     { title: "Banks", icon: "cash-outline" },
     { title: "Companies", icon: "briefcase-outline" },
     { title: "Others", icon: "layers-outline" },
   ];
+
+  const handleReportSpamPress = () => {
+    navigation.navigate("report");
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#0e0e0e", padding: 20 }}>
@@ -55,6 +61,7 @@ const HomeScreen = () => {
           transform: [{ scale: 1.05 }],
         }}
         activeOpacity={0.7}
+        onPress={handleReportSpamPress}
       >
         <Ionicons
           name="warning-outline"
@@ -68,16 +75,16 @@ const HomeScreen = () => {
       {/* Grid Cards */}
       <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
         {data.map((item, index) => {
-            let description = "";
-            if (item.title === "Governments") {
-                description = "Protect from scams impersonating agencies.";
-            } else if (item.title === "Banks") {
-                description = "Stay safe from fake banking alerts.";
-            } else if (item.title === "Companies") {
-                description = "Avoid frauds by fake companies.";
-            } else if (item.title === "Others") {
-                description = "Beware of unknown scam attempts.";
-            }
+          let description = "";
+          if (item.title === "Governments") {
+            description = "Protect from scams impersonating agencies.";
+          } else if (item.title === "Banks") {
+            description = "Stay safe from fake banking alerts.";
+          } else if (item.title === "Companies") {
+            description = "Avoid frauds by fake companies.";
+          } else if (item.title === "Others") {
+            description = "Beware of unknown scam attempts.";
+          }
 
           return (
             <View

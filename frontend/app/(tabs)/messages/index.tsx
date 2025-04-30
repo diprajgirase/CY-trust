@@ -315,7 +315,10 @@ const Messages = ({ navigation }) => {
                                         navigation?.setOptions({ tabBarVisible: false });
                                     }}
                                 >
-                                    <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
+                                    <View style={styles.profileImageContainer}>
+                                        <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
+                                        {item.id === 'axis' && <View style={styles.axisBankBorder} />}
+                                    </View>
                                     <Text style={styles.chatText}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
@@ -395,11 +398,24 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    profileImageContainer: {
+        position: 'relative',
+        marginRight: 10,
+    },
     profileImage: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        marginRight: 10,
+    },
+    axisBankBorder: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: 'green',
     },
     chatText: {
         color: '#fff',
